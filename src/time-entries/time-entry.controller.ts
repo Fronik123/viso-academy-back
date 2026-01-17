@@ -1,4 +1,4 @@
-import { Controller, Body, Post } from '@nestjs/common';
+import { Controller, Body, Post, Get } from '@nestjs/common';
 import { TimeEntriesService } from './time-entry.service';
 import { CreateTimeEntryDto } from './dto/create-time-entry.dto';
 
@@ -9,5 +9,10 @@ export class TimeEntriesController {
   @Post()
   create(@Body() createTimeEntryDto: CreateTimeEntryDto) {
     return this.timeEntriesService.create(createTimeEntryDto);
+  }
+
+  @Get()
+  findAll() {
+    return this.timeEntriesService.findAll();
   }
 }

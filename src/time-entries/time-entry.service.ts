@@ -44,4 +44,41 @@ export class TimeEntriesService {
       },
     });
   }
+
+  async findAll() {
+    const entries = await this.prisma.timeEntry.findMany({
+      orderBy: {
+        date: 'desc',
+      },
+    });
+
+    const groupedByDate: Record<string, typeof entries> = {};
+
+    entries.forEach((entry) => {
+      const dateKey = entry.date.toISOString().split('T')[0];
+      if (!groupedByDate[dateKey]) {
+        groupedByDate[dateKey] = [];
+      }
+      groupedByDate[dateKey].push(entry);
+    });
+
+    const grouped = Object.entries(groupedByDate).map(([date, dateEntries]) => {
+      const totalHoursForDay = dateEntries.reduce(
+        (sum, entry) => sum + entry.hours,
+        0,
+      );
+      return {
+        date,
+        entries: dateEntries,
+        totalHours: totalHoursForDay,
+      };
+    });
+
+    const grandTotal = entries.reduce((sum, entry) => sum + entry.hours, 0);
+
+    return {
+      grouped,
+      grandTotal,
+    };
+  }
 }
