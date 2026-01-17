@@ -3,8 +3,8 @@ import {
   IsNumber,
   IsDateString,
   IsNotEmpty,
-  Min,
   Max,
+  IsPositive,
 } from 'class-validator';
 
 export class CreateTimeEntryDto {
@@ -17,7 +17,7 @@ export class CreateTimeEntryDto {
   project: string;
 
   @IsNumber()
-  @Min(0.01, { message: 'Hours must be a positive number' })
+  @IsPositive({ message: 'Hours must be a positive number' })
   @Max(24, { message: 'Hours cannot exceed 24 per day' })
   @IsNotEmpty()
   hours: number;
